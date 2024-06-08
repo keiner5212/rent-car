@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useReducer } from "react";
-import { createContext } from "react";
+import { useReducer, createContext } from "react";
 import reducer from "./StateReducer";
 import { initialState } from "./stateInit";
 

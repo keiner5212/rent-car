@@ -1,0 +1,37 @@
+.car-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:15px;
+    border: 1px solid #3e3e3e7c;
+    border-radius: 10px;
+    margin: 15px;
+    width: 300px;
+    height: 400px;
+    cursor: pointer;
+    background-color: #ffffff7c;
+    transition: all 0.5s ease;
+
+    &:hover {
+        background-color: #b9d7aac9;
+        transform: scale(1.05);
+    }
+}
+
+.image-wrapper {
+    overflow: hidden;
+    border-radius: 10px 10px 0px 0px;
+    width: 100%;
+    height: 190px;
+
+    & img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.car-color {
+    text-shadow: 1px 0 #000000, -1px 0 #000000, 0 1px #000000, 0 -1px #000000,
+        1px 1px #000000, -1px -1px #000000, 1px -1px #000000, -1px 1px #000000;
+    letter-spacing: 2px;
+}

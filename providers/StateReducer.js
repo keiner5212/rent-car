@@ -1,16 +1,17 @@
 import { createContext } from "react";
+import { CarStates } from "./StateActions";
 
 export const CarContext = createContext();
 
 const reducer = (state, action) => {
 	switch (action.type) {
-		case "GET-ALL":
-			return state.cars;
-		case "ADD-CAR":
+		case CarStates.SET_CARS:
 			return {
 				...state,
-				cars: [...state.cars, action.payload],
-			};
+				cars: action.payload,
+			}
+		case CarStates.GET_ALL:
+			return state.cars;
 		default:
 			return state;
 	}
