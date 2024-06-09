@@ -1,19 +1,43 @@
 import { useContext, useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { MainContext } from "../../../providers/MainContextProvider";
 import "./Rent.css";
 import Button from "../../components/animated/Button";
+import { toast } from "react-toastify";
 
 function Rent() {
 	const { id } = useParams();
 	const { state } = useContext(MainContext);
-	const [car, setCar] = useState(undefined);
+	const [dateInfo, setDateInfo] = useState({
+		"date-start": "",
+		"date-end": "",
+	});
+	const [car, setCar] = useState({});
+	const navigate = useNavigate();
 	useEffect(() => {
 		if (state.cars) {
 			const carfound = state.cars.find((c) => c.id_carro == id);
 			setCar(carfound);
 		}
+		const dateStart = localStorage.getItem("date-start");
+		const dateEnd = localStorage.getItem("date-end");
+		setDateInfo({
+			"date-start": dateStart,
+			"date-end": dateEnd,
+		});
 	}, [state, id]);
+
+	useEffect(() => {
+		if (!car) {
+			toast.error("Car not found");
+			navigate("/");
+		}
+		if (!dateInfo["date-start"] || !dateInfo["date-end"]) {
+			toast.error("Date info not provided");
+			navigate("/");
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [car]);
 
 	const formLabelDefaults = {
 		name: "Name",
