@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import useGetCars from "./hooks/useGetCars";
 import { useContext, useEffect } from "react";
 import { CarStates } from "../providers/StateActions";
+import Rent from "./pages/rent/Rent";
 
 function App() {
 	const { cars } = useGetCars();
@@ -26,6 +27,7 @@ function App() {
 					<Route path="/" element={<Navigate to="/1" />} />
 					<Route path="/about" element={<About />} />
 					<Route path="/:page" element={<Home />} />
+					<Route path="/Rent" element={<Rent />} />
 				</Routes>
 				<ToastContainer />
 			</main>
