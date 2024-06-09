@@ -52,3 +52,9 @@
     margin-right: 30px;
 }
 
+.about-wrapper{
+    height: calc(100vh - 90px);
+    overflow: auto;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}

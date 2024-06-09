@@ -27,7 +27,7 @@ function App() {
 					<Route path="/" element={<Navigate to="/1" />} />
 					<Route path="/about" element={<About />} />
 					<Route path="/:page" element={<Home />} />
-					<Route path="/Rent" element={<Rent />} />
+					<Route path="/rent/:id" element={<Rent />} />
 				</Routes>
 				<ToastContainer />
 			</main>

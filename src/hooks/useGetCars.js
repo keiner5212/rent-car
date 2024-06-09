@@ -8,7 +8,7 @@ function useGetCars() {
 		axios
 			.get(import.meta.env.VITE_API_URL + "/cars")
 			.then((res) => {
-				setCars(res.data.carros);
+				setCars(res.data.carros ?? []);
 				toast.success("Get cars successfully!");
 			})
 			.catch(() => {
