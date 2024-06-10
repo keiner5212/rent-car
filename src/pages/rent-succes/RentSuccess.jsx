@@ -35,7 +35,7 @@ function RentSucess() {
 	}, [id]);
 
 	return (
-		<div className="flex flex-col items-center justify-center h-full">
+		<div className="flex flex-col items-center  h-full overflow-auto p-4">
 			{!rentData ? (
 				<Loader />
 			) : (
