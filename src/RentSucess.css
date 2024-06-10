@@ -1,0 +1,48 @@
+.title{
+    font-size: 60px;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    color: #1e07b9;
+    -webkit-text-stroke: 3px rgb(0, 0, 0);
+    margin-bottom: 10px;
+}
+
+.car-image{
+    width: 200px;
+    height: 200px;
+    border-radius: 100%;
+    display: inline-block;
+    border: 2px solid #000000;
+    display: block; 
+    margin: 0 auto; 
+}
+
+.info{
+    text-align: center;
+    font-size: 20px;
+    margin-top: 20px;
+    padding: 0;
+}
+
+.car-information{
+    font-size: 30px;
+    margin-top: 10px;
+    padding: 0;
+    color: #fc0505;
+    -webkit-text-stroke: 1px rgb(11, 11, 11);
+}
+
+.user-information{
+    font-size: 30px;
+    margin-top: 10px;
+    padding: 0;
+    color: #078725;
+    -webkit-text-stroke: 1px rgb(11, 11, 11);
+}
+.info{
+    text-align: center;
+    font-size: 20px;
+    margin-top: 20px;
+    padding: 0;
+}
