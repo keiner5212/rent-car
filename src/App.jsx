@@ -31,6 +31,7 @@ function App() {
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [cars, prestamos]);
+	console.log(cars,prestamos);
 	return (
 		<Router>
 			<Header />

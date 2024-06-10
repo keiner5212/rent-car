@@ -1,9 +1,9 @@
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { MainContext } from "../../../providers/MainContextProvider";
+import { isCarAvailable } from "../../utils/RentCar";
 import Button from "../animated/Button";
 import "./CarItem.css";
-import { isCarAvailable } from "../../utils/RentCar";
-import { MainContext } from "../../../providers/MainContextProvider";
-import { useContext, useState, useEffect } from "react";
 
 export default function CarItem({ car }) {
 	const navigate = useNavigate();
@@ -36,8 +36,8 @@ export default function CarItem({ car }) {
 			<div className="image-wrapper">
 				<img src={car.imagen} alt={car.marca} />
 			</div>
-			<p>{car.marca}</p>
-			<p>{car.modelo}</p>
+			<p>{car.marca+" - "+car.modelo}</p>
+			<p>{car.precio}$</p>
 			<p
 				className="car-color"
 				style={{ color: carColors[car.color.toLowerCase()] }}
