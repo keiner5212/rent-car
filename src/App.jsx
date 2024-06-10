@@ -15,7 +15,6 @@ import { CarStates, RentStates } from "../providers/StateActions";
 import Rent from "./pages/rent/Rent";
 import useGetRents from "./hooks/useGetRents";
 
-
 function App() {
 	const { dispatch } = useContext(MainContext);
 	const { cars } = useGetCars(dispatch);
@@ -40,6 +39,16 @@ function App() {
 					<Route path="/about" element={<About />} />
 					<Route path="/:page" element={<Home />} />
 					<Route path="/rent/:id" element={<Rent />} />
+					<Route
+						path="/rent-success/:id"
+						element={
+							<>
+								aca se cargara la informacion de la renta, se
+								deebe usar axios para realizar la peticion al
+								endpoint de /prestamos/:id
+							</>
+						}
+					/>
 				</Routes>
 				<ToastContainer />
 			</main>

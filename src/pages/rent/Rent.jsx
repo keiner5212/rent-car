@@ -5,6 +5,12 @@ import "./Rent.css";
 import Button from "../../components/animated/Button";
 import { toast } from "react-toastify";
 import { isCarAvailable } from "../../utils/RentCar";
+import axios from "axios";
+import {
+	validateOnlyLetters,
+	validateOnlyNumbers,
+} from "../../utils/Validations";
+import Loader from "../../components/loader/Loader";
 
 function Rent() {
 	const { id } = useParams();
@@ -13,6 +19,7 @@ function Rent() {
 		"date-start": true,
 		"date-end": true,
 	});
+	const [loading, setLoading] = useState(false);
 	const [car, setCar] = useState({});
 	const [stateLoaded, setStateLoaded] = useState(false);
 	const navigate = useNavigate();
@@ -106,9 +113,76 @@ function Rent() {
 		}
 	}, [car, state, dateInfo]);
 
+	function handleSubmit(e) {
+		e.preventDefault();
+		setLoading(true);
+		if (
+			formInputValues.name === "" ||
+			formInputValues.lastname === "" ||
+			formInputValues.document === "" ||
+			formInputValues.address === "" ||
+			formInputValues.phone === ""
+		) {
+			toast.error("All fields are required");
+			setLoading(false);
+			return;
+		}
+		if (!validateOnlyLetters(formInputValues.name)) {
+			toast.error("Invalid name, must be only letters");
+			setLoading(false);
+			return;
+		}
+		if (!validateOnlyLetters(formInputValues.lastname)) {
+			toast.error("Invalid lastname, must be only letters");
+			setLoading(false);
+			return;
+		}
+		if (!validateOnlyNumbers(formInputValues.document)) {
+			toast.error("Invalid document, must be only numbers");
+			setLoading(false);
+			return;
+		}
+		if (!formInputValues.address.length > 5) {
+			toast.error("Invalid address, must be at least 5 characters");
+			setLoading(false);
+			return;
+		}
+		if (!validateOnlyNumbers(formInputValues.phone)) {
+			toast.error("Invalid phone, must be only numbers");
+			setLoading(false);
+			return;
+		}
+
+		axios
+			.post(import.meta.env.VITE_API_URL + "/users", {
+				nombre: formInputValues.name,
+				apellido: formInputValues.lastname,
+				cedula: formInputValues.document,
+				direccion: formInputValues.address,
+				telefono: formInputValues.phone,
+			})
+			.then((response) => {
+				axios
+					.post(import.meta.env.VITE_API_URL + "/prestamos", {
+						carro_id: car.id_carro,
+						usuario_id: response.data.success.id_usuario,
+						fechaInicio: dateInfo["date-start"],
+						fechaFin: dateInfo["date-end"],
+					})
+					.then((response) => {
+						navigate(
+							"/rent-success/" + response.data.success.id_prestamo
+						);
+					});
+			});
+	}
+
 	return (
 		<div className="h-full flex  items-center justify-center">
-			<form className="flex flex-col gap-[25px] p-[20px] bg-[#ffffff93] rounded-xl min-w-[500px]">
+			<form
+				onSubmit={handleSubmit}
+				className="flex flex-col gap-[25px] p-[20px] bg-[#ffffff93] rounded-xl min-w-[500px]"
+			>
 				<h2 className="text-xl">
 					Rent {car?.marca} {car?.modelo}
 				</h2>
@@ -197,8 +271,16 @@ function Rent() {
 						</label>
 					</div>
 				</div>
-
-				<Button type="submit">Rent</Button>
+				{loading && (
+					<>
+						<div className="w-full flex items-center justify-center">
+							<Loader />
+						</div>
+					</>
+				)}
+				<Button disabled={loading} type="submit">
+					Rent
+				</Button>
 			</form>
 		</div>
 	);
