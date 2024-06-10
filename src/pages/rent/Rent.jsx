@@ -154,26 +154,78 @@ function Rent() {
 		}
 
 		axios
-			.post(import.meta.env.VITE_API_URL + "/users", {
-				nombre: formInputValues.name,
-				apellido: formInputValues.lastname,
-				cedula: formInputValues.document,
-				direccion: formInputValues.address,
-				telefono: formInputValues.phone,
-			})
+			.get(
+				import.meta.env.VITE_API_URL +
+					"/users/" +
+					formInputValues.document
+			)
 			.then((response) => {
-				axios
-					.post(import.meta.env.VITE_API_URL + "/prestamos", {
-						carro_id: car.id_carro,
-						usuario_id: response.data.success.id_usuario,
-						fechaInicio: dateInfo["date-start"],
-						fechaFin: dateInfo["date-end"],
-					})
-					.then((response) => {
-						navigate(
-							"/rent-success/" + response.data.success.id_prestamo
-						);
-					});
+				if (response.status == 204) {
+					//means user not found
+					axios
+						.post(import.meta.env.VITE_API_URL + "/users", {
+							nombre: formInputValues.name,
+							apellido: formInputValues.lastname,
+							cedula: formInputValues.document,
+							direccion: formInputValues.address,
+							telefono: formInputValues.phone,
+						})
+						.then((response) => {
+							toast.success("User created successfully");
+							axios
+								.post(
+									import.meta.env.VITE_API_URL + "/prestamos",
+									{
+										carro_id: car.id_carro,
+										usuario_id:
+											response.data.success.id_usuario,
+										fechaInicio: dateInfo["date-start"],
+										fechaFin: dateInfo["date-end"],
+									}
+								)
+								.then((response) => {
+									toast.success("Rent created successfully");
+									navigate(
+										"/rent-success/" +
+											response.data.success.id_prestamo
+									);
+								})
+								.catch(() => {
+									toast.error(
+										"Error while trying to create Rent"
+									);
+								});
+						})
+						.catch(() => {
+							toast.error("Error while trying to create user");
+						});
+				} else if (response.status == 200) {
+					toast.success(
+						"User with this document found, proceed with the rent"
+					);
+					//means user found
+					axios
+						.post(import.meta.env.VITE_API_URL + "/prestamos", {
+							carro_id: car.id_carro,
+							usuario_id: response.data["user-found"].id_usuario,
+							fechaInicio: dateInfo["date-start"],
+							fechaFin: dateInfo["date-end"],
+						})
+						.then((response) => {
+							toast.success("Rent created successfully");
+							navigate(
+								"/rent-success/" +
+									response.data.success.id_prestamo
+							);
+						})
+						.catch(() => {
+							toast.error("Error while trying to create Rent");
+						});
+				}
+			})
+			.catch(() => {
+				setLoading(false);
+				toast.error("Error while trying to create user");
 			});
 	}
 
