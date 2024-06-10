@@ -4,15 +4,17 @@ import { MainContext } from "../../../providers/MainContextProvider";
 import "./Rent.css";
 import Button from "../../components/animated/Button";
 import { toast } from "react-toastify";
+import { isCarAvailable } from "../../utils/RentCar";
 
 function Rent() {
 	const { id } = useParams();
 	const { state } = useContext(MainContext);
 	const [dateInfo, setDateInfo] = useState({
-		"date-start": "",
-		"date-end": "",
+		"date-start": true,
+		"date-end": true,
 	});
 	const [car, setCar] = useState({});
+	const [stateLoaded, setStateLoaded] = useState(false);
 	const navigate = useNavigate();
 	useEffect(() => {
 		if (state.cars) {
@@ -25,9 +27,13 @@ function Rent() {
 			"date-start": dateStart,
 			"date-end": dateEnd,
 		});
+		setStateLoaded(true);
 	}, [state, id]);
 
 	useEffect(() => {
+		if (!stateLoaded || state.loading) {
+			return;
+		}
 		if (!car) {
 			toast.error("Car not found");
 			navigate("/");
@@ -37,7 +43,7 @@ function Rent() {
 			navigate("/");
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [car]);
+	}, [stateLoaded]);
 
 	const formLabelDefaults = {
 		name: "Name",
@@ -80,6 +86,25 @@ function Rent() {
 			});
 		}
 	}
+
+	useEffect(() => {
+		if (!car) return;
+		if (!stateLoaded || state.loading) {
+			return;
+		}
+		if (
+			!isCarAvailable(
+				car.id_carro,
+				state.cars,
+				state.rents,
+				dateInfo["date-start"],
+				dateInfo["date-end"]
+			)
+		) {
+			toast.error("Car not available");
+			navigate("/");
+		}
+	}, [car, state, dateInfo]);
 
 	return (
 		<div className="h-full flex  items-center justify-center">

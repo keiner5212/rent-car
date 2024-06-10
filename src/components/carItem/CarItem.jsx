@@ -1,9 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import Button from "../animated/Button";
 import "./CarItem.css";
+import { isCarAvailable } from "../../utils/RentCar";
+import { MainContext } from "../../../providers/MainContextProvider";
+import { useContext, useState, useEffect } from "react";
 
 export default function CarItem({ car }) {
-	const navigate= useNavigate()
+	const navigate = useNavigate();
+	const [available, setAvailable] = useState(false);
+	const { state } = useContext(MainContext);
 	const carColors = {
 		rojo: "red",
 		azul: "blue",
@@ -14,6 +19,18 @@ export default function CarItem({ car }) {
 		naranja: "orange",
 		rosado: "pink",
 	};
+	useEffect(() => {
+		setAvailable(
+			isCarAvailable(
+				car.id_carro,
+				state.cars,
+				state.rents,
+				localStorage.getItem("date-start"),
+				localStorage.getItem("date-end")
+			)
+		);
+	}, []);
+
 	return (
 		<div className="car-item">
 			<div className="image-wrapper">
@@ -29,7 +46,13 @@ export default function CarItem({ car }) {
 			</p>
 			<p>{car.ciudad}</p>
 			<div className="relative flex flex-row justify-end w-[90%]">
-				<Button OnClick={() => navigate(`/rent/${car.id_carro}`)}>Rent Now</Button>
+				{available ? (
+					<Button OnClick={() => navigate(`/rent/${car.id_carro}`)}>
+						Rent Now
+					</Button>
+				) : (
+					<span className="text-red-500">Not Available</span>
+				)}
 			</div>
 		</div>
 	);

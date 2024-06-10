@@ -1,8 +1,11 @@
 export class CarStates{
     static SET_CARS = "SET_CARS";
-    static GET_ALL = "GET_ALL";
 }
 
 export class RentStates{
-    static GET_ALL = "GET_ALL";
+    static SET_RENTS = "SET_RENTS";
+}
+
+export class GlobalStates{
+    static SET_LOADING = "SET_LOADING";
 }

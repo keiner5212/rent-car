@@ -2,15 +2,16 @@ import { useContext, useState, useEffect } from "react";
 import { MainContext } from "../../providers/MainContextProvider";
 import Loader from "../components/loader/Loader";
 import CarItem from "../components/carItem/CarItem";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import "./Home.css";
 import { toast } from "react-toastify";
 
 function Home() {
-	const pagesize = 5;
+	const pagesize = 10;
 	const { state } = useContext(MainContext);
 	const { page } = useParams();
+	const navigate = useNavigate();
 	const [cars, setCars] = useState([]);
 	const [fileredCars, setFileredCars] = useState([]);
 	const [locationsSet, setLocationsSet] = useState(new Set());
@@ -19,7 +20,9 @@ function Home() {
 		"date-start": undefined,
 		"date-end": undefined,
 	});
+
 	useEffect(() => {
+		setLocationsSet(new Set(state.cars.map((car) => car.ciudad)));
 		if (!filters["date-start"] || !filters["date-end"]) return;
 		if (filters.location) {
 			setFileredCars(
@@ -30,7 +33,7 @@ function Home() {
 		} else {
 			setFileredCars(state.cars);
 		}
-		setLocationsSet(new Set(state.cars.map((car) => car.ciudad)));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [state, filters["date-start"], filters["date-end"], filters.location]);
 
 	useEffect(() => {
@@ -41,15 +44,48 @@ function Home() {
 		if (!filters["date-start"] || !filters["date-end"]) return;
 		return Math.ceil(fileredCars.length / pagesize);
 	}
+
 	function handleFilterLocation(e) {
-		setFilters({ ...filters, location: e.value });
+		localStorage.setItem("location", e.value);
+		navigate("/");
 	}
 
 	function handleFilterStart(e) {
+		if (e.target.value === "") {
+			localStorage.removeItem("date-start");
+		} else {
+			localStorage.setItem("date-start", e.target.value);
+		}
 		setFilters({ ...filters, [e.target.name]: e.target.value });
 	}
 
+	useEffect(() => {
+		if (localStorage.getItem("location")) {
+			setFilters((prev) => ({
+				...prev,
+				location: localStorage.getItem("location"),
+			}));
+		}
+		if (localStorage.getItem("date-start")) {
+			setFilters((prev) => ({
+				...prev,
+				"date-start": localStorage.getItem("date-start"),
+			}));
+		}
+		if (localStorage.getItem("date-end")) {
+			setFilters((prev) => ({
+				...prev,
+				"date-end": localStorage.getItem("date-end"),
+			}));
+		}
+	}, []);
+
 	function handleFilterEnd(e) {
+		if (e.target.value === "") {
+			localStorage.removeItem("date-end");
+		} else {
+			localStorage.setItem("date-end", e.target.value);
+		}
 		if (e.target.value != "" && e.target.value > filters["date-start"]) {
 			setFilters({ ...filters, [e.target.name]: e.target.value });
 		} else {
@@ -67,6 +103,12 @@ function Home() {
 					<div className="flex flex-col">
 						<label htmlFor="location">Location</label>
 						<Select
+							defaultValue={
+								localStorage.getItem("location") && {
+									value: localStorage.getItem("location"),
+									label: localStorage.getItem("location"),
+								}
+							}
 							name="location"
 							id="location"
 							onChange={handleFilterLocation}
@@ -86,6 +128,7 @@ function Home() {
 							type="date"
 							name="date-start"
 							onChange={handleFilterStart}
+							value={localStorage.getItem("date-start") || ""}
 							id="date-start"
 						/>
 					</div>
@@ -96,6 +139,7 @@ function Home() {
 							type="date"
 							name="date-end"
 							onChange={handleFilterEnd}
+							value={localStorage.getItem("date-end") || ""}
 							id="date-end"
 						/>
 					</div>

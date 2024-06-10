@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { CarStates, RentStates } from "./StateActions";
+import { CarStates, GlobalStates, RentStates } from "./StateActions";
 
 export const CarContext = createContext();
 
@@ -10,13 +10,16 @@ const reducer = (state, action) => {
 				...state,
 				cars: action.payload,
 			}
-		case RentStates.GET_ALL:
+		case RentStates.SET_RENTS:
 			return {
 				...state,
 				rents: action.payload,
 			}
-		case CarStates.GET_ALL:
-			return state.cars;
+		case GlobalStates.SET_LOADING:
+			return {
+				...state,
+				loading: action.payload,
+			}
 		default:
 			return state;
 	}

@@ -15,21 +15,22 @@ import { CarStates, RentStates } from "../providers/StateActions";
 import Rent from "./pages/rent/Rent";
 import useGetRents from "./hooks/useGetRents";
 
+
 function App() {
-	const { cars } = useGetCars();
-	const { prestamos } = useGetRents();
 	const { dispatch } = useContext(MainContext);
+	const { cars } = useGetCars(dispatch);
+	const { prestamos } = useGetRents(dispatch);
 	useEffect(() => {
 		dispatch({
 			type: CarStates.SET_CARS,
 			payload: cars,
 		});
 		dispatch({
-			type: RentStates.GET_ALL,
+			type: RentStates.SET_RENTS,
 			payload: prestamos,
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [cars]);
+	}, [cars, prestamos]);
 	return (
 		<Router>
 			<Header />
